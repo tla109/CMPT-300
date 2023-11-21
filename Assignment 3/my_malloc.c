@@ -1,11 +1,18 @@
 #include "my_malloc.h"
 #include <stdlib.h> // for system memory allocation
+#include <stdint.h> //for uintptr_t
+
+
+#define ALIGNMENT 8
+
+// Round up to the nearest multiple of ALIGNMENT
+#define ALIGN(size) (((size) + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1))
 
 // Define a structure for a free block
 typedef struct block {
     size_t size;
     struct block* next;
-} Block;
+} __attribute__((aligned(ALIGNMENT)))Block;
 
 // Define the number of free lists (adjust as needed)
 #define NUM_FREE_LISTS 10
@@ -39,7 +46,8 @@ void* my_malloc(size_t size) {
                 free_lists[list_index] = current->next;
             }
 
-            return (void*)((char*)current + sizeof(Block));
+            // Ensure user-facing memory is aligned
+            return (void*)((uintptr_t)((char*)current + sizeof(Block) + ALIGNMENT - 1) & ~(ALIGNMENT - 1));
         }
 
         previous = current;
@@ -52,10 +60,10 @@ void* my_malloc(size_t size) {
 
     if (current != NULL) {
         current->size = block_size;
-        return (void*)((char*)current + sizeof(Block));
+        return (void*)((uintptr_t)((char*)current + sizeof(Block) + ALIGNMENT - 1) & ~(ALIGNMENT - 1));
+    } else {
+        return NULL; // Memory allocation failed
     }
-
-    return NULL; // Memory allocation failed
 }
 
 void my_free(void *ptr) {
