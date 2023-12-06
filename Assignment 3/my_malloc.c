@@ -1,7 +1,7 @@
 #include "my_malloc.h"
 #include <stdlib.h> // for system memory allocation
 #include <stdint.h> //for uintptr_t
-
+#include <stdio.h>
 
 #define ALIGNMENT 8
 
@@ -16,6 +16,16 @@ typedef struct block {
 
 // Define the number of free lists (adjust as needed)
 #define NUM_FREE_LISTS 10
+
+// Data structure to track allocated blocks
+typedef struct {
+    void* ptr;
+    size_t size;
+} AllocationInfo;
+
+// Array to store allocation information
+static AllocationInfo allocations[MAX_ALLOCATIONS];
+static size_t num_allocations = 0;
 
 // Array of free lists
 static Block* free_lists[NUM_FREE_LISTS] = {NULL};

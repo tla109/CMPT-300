@@ -1,6 +1,6 @@
 
 mem_test: my_malloc.o mem_test.o
-	gcc -Wall -o mem_test my_malloc.o mem_test.o
+	gcc -Wall -o mem_test my_malloc.o mem_test.o && ./mem_test
 
 my_malloc.o: my_malloc.c my_malloc.h
 	gcc -Wall -c my_malloc.c
