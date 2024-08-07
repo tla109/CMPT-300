@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #define ALIGNMENT 8
+#define MAX_ALLOCATIONS 100
 
 // Round up to the nearest multiple of ALIGNMENT
 #define ALIGN(size) (((size) + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1))
@@ -22,10 +23,6 @@ typedef struct {
     void* ptr;
     size_t size;
 } AllocationInfo;
-
-// Array to store allocation information
-static AllocationInfo allocations[MAX_ALLOCATIONS];
-static size_t num_allocations = 0;
 
 // Array of free lists
 static Block* free_lists[NUM_FREE_LISTS] = {NULL};
